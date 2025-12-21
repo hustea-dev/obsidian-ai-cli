@@ -1,0 +1,27 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "^1.4.0",
+    "dotenv": "^16.5.0",
+    "marked": "^15.0.12",
+    "marked-terminal": "^7.3.0",
+    "zod": "^4.1.13"
+  },
+  "name": "gemini",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gemini copy 2.js",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16",
+    "zenn-cli": "^0.2.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
