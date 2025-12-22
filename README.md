@@ -23,7 +23,9 @@ Obsidian, Google Gemini, and X (formerly Twitter) integrated CLI tool to superch
     ```
     # .env
     GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY"
-    OBSIDIAN_VAULT_PATH="/path/to/your/obsidian/vault"
+    
+    # Absolute path to your Obsidian Vault
+    OBSIDIAN_VAULT_PATH="/home/user/Documents/ObsidianVault"
 
     # Language setting (en or ja)
     APP_LANG="en"

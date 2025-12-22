@@ -21,7 +21,9 @@ Obsidian、Google Gemini、そして X (旧 Twitter) を統合し、メモ作成
     ```
     # .env
     GEMINI_API_KEY="YOUR_GOOGLE_GEMINI_API_KEY"
-    OBSIDIAN_VAULT_PATH="/path/to/your/obsidian/vault"
+    
+    # Obsidian Vaultの絶対パスを指定してください
+    OBSIDIAN_VAULT_PATH="/home/user/Documents/ObsidianVault"
 
     # 言語設定 (ja または en)
     APP_LANG="ja"
