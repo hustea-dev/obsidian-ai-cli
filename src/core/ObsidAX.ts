@@ -34,7 +34,6 @@ export class ObsidAX {
         const relativePath = path.join('Inbox', dateStr, `log_${timeStr}.md`);
         let fullPath = "";
 
-        // Generalモード以外の場合のみ、Obsidianにノートを作成する
         if (mode !== AppMode.GENERAL) {
             const frontmatter = createNoteContent({
                 date: now,
