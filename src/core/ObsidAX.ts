@@ -32,15 +32,19 @@ export class ObsidAX {
         const timeStr = now.toTimeString().split(' ')[0]?.replace(/:/g, '') || '000000';
 
         const relativePath = path.join('Inbox', dateStr, `log_${timeStr}.md`);
+        let fullPath = "";
 
-        const frontmatter = createNoteContent({
-            date: now,
-            mode: mode,
-            inputData: inputData
-        })
+        // Generalモード以外の場合のみ、Obsidianにノートを作成する
+        if (mode !== AppMode.GENERAL) {
+            const frontmatter = createNoteContent({
+                date: now,
+                mode: mode,
+                inputData: inputData
+            })
 
-        const fullPath = await this.obsidian.createNote(relativePath, frontmatter);
-        console.log(`\n${TEXT.logs.obsidianSaved}: ${fullPath}`);
+            fullPath = await this.obsidian.createNote(relativePath, frontmatter);
+            console.log(`\n${TEXT.logs.obsidianSaved}: ${fullPath}`);
+        }
 
         let strategy: ModeStrategy;
 
@@ -61,7 +65,7 @@ export class ObsidAX {
             inputData,
             this.obsidian,
             this.genAI,
-            { relativePath, fullPath },
+            { relativePath, fullPath }, // fullPathは空文字の可能性があるが、GeneralStrategyでは使われないのでOK
             this.config.instruction
         );
         

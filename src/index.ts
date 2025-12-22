@@ -65,37 +65,35 @@ function validateMode(modeInput: string | undefined): AppMode {
     );
     let instruction = instructionArg ? instructionArg.split('=')[1] : undefined;
 
-    if (!instruction) {
-        if (filePath && positionalArgs.length >= 2) {
-            instruction = positionalArgs[1];
-        } else if (!filePath && positionalArgs.length >= 1) {
-            if (positionalArgs.length >= 2) {
-                 instruction = positionalArgs[1];
-            }
-        }
-    }
-    
-    if (filePath && !instruction) {
-        try {
-            await fs.access(filePath);
-        } catch {
-            instruction = filePath;
-            filePath = undefined;
-        }
-    }
-
     let inputData = "";
+
     if (filePath) {
         try {
+            await fs.access(filePath);
             inputData = await fs.readFile(filePath, 'utf-8');
         } catch (e) {
-            console.error(`${TEXT.errors.fileReadError} '${filePath}'`);
-            process.exit(1);
+            const textInput = filePath; // 元の文字列を保存
+            filePath = undefined;
+
+            const stdinData = await readStdin().catch(() => "");
+            
+            if (stdinData) {
+                inputData = stdinData;
+                if (!instruction) {
+                    instruction = textInput;
+                }
+            } else {
+                inputData = textInput;
+                
+                if (!instruction && positionalArgs.length >= 2) {
+                    instruction = positionalArgs[1];
+                }
+            }
         }
     } else {
         inputData = await readStdin().catch(() => "");
     }
-    
+
     const mode = validateMode(modeInput);
 
     const app = new ObsidAX({
