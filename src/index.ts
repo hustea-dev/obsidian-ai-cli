@@ -44,14 +44,45 @@ function validateMode(modeInput: string | undefined): AppMode {
         process.exit(1);
     }
 
-    const modeArg = process.argv.find(arg => arg.startsWith('--mode='));
+    const args = process.argv.slice(2);
+    
+    const modeArg = args.find(arg => arg.startsWith('--mode='));
     const modeInput = modeArg ? modeArg.split('=')[1] : undefined;
     
-    const instructionArg = process.argv.find(arg => arg.startsWith('--instruction='));
-    const instruction = instructionArg ? instructionArg.split('=')[1] : undefined;
+    const fileArg = args.find(arg => arg.startsWith('--file='));
+    let filePath = fileArg ? fileArg.split('=')[1] : undefined;
+    
+    const positionalArgs = args.filter(arg => !arg.startsWith('--') && !arg.startsWith('-'));
 
-    const fileArg = process.argv.find(arg => arg.startsWith('--file='));
-    const filePath = fileArg ? fileArg.split('=')[1] : undefined;
+    if (!filePath && positionalArgs.length > 0) {
+        filePath = positionalArgs[0];
+    }
+
+    const instructionArg = args.find(arg =>
+        arg.startsWith('--instruction=') || 
+        arg.startsWith('--inst=') || 
+        arg.startsWith('-i=')
+    );
+    let instruction = instructionArg ? instructionArg.split('=')[1] : undefined;
+
+    if (!instruction) {
+        if (filePath && positionalArgs.length >= 2) {
+            instruction = positionalArgs[1];
+        } else if (!filePath && positionalArgs.length >= 1) {
+            if (positionalArgs.length >= 2) {
+                 instruction = positionalArgs[1];
+            }
+        }
+    }
+    
+    if (filePath && !instruction) {
+        try {
+            await fs.access(filePath);
+        } catch {
+            instruction = filePath;
+            filePath = undefined;
+        }
+    }
 
     let inputData = "";
     if (filePath) {

@@ -46,14 +46,7 @@ export class XPostStrategy extends BaseStrategy {
 
         console.log(`\n${TEXT.logs.xPostStart}`);
 
-        const selectedPost = await select({
-            message: TEXT.ui.selectPost,
-            choices: candidates.map((c, index) => ({
-                name: `${index + 1}. ${c.content.substring(0, 50)}... (${c.hashtags.join(' ')})`,
-                value: c,
-                description: c.content
-            })),
-        });
+        const selectedPost = await this.selectPostCandidate(candidates);
 
         const fullPostContent = `${selectedPost.content}\n\n${selectedPost.hashtags.join(" ")}`;
 
@@ -62,14 +55,11 @@ export class XPostStrategy extends BaseStrategy {
         console.log(fullPostContent);
         console.log("--------------------------------------------------");
 
-        const isConfirmed = await confirm({
-            message: TEXT.ui.confirmPost,
-            default: false
-        });
+        const isConfirmed = await this.confirmPost();
 
         if (isConfirmed) {
             try {
-                const xService = new XService();
+                const xService = this.createXService();
                 const result = await xService.postTweet(fullPostContent);
                 
                 console.log(`\n${TEXT.logs.xPostSuccess} (ID: ${result.id})`);
@@ -82,5 +72,27 @@ export class XPostStrategy extends BaseStrategy {
         } else {
             console.log(`\n${TEXT.logs.xPostCancel}`);
         }
+    }
+
+    protected async selectPostCandidate(candidates: XPostCandidate[]): Promise<XPostCandidate> {
+        return await select({
+            message: TEXT.ui.selectPost,
+            choices: candidates.map((c, index) => ({
+                name: `${index + 1}. ${c.content.substring(0, 50)}... (${c.hashtags.join(' ')})`,
+                value: c,
+                description: c.content
+            })),
+        });
+    }
+
+    protected async confirmPost(): Promise<boolean> {
+        return await confirm({
+            message: TEXT.ui.confirmPost,
+            default: false
+        });
+    }
+
+    protected createXService(): XService {
+        return new XService();
     }
 }
