@@ -83,26 +83,23 @@ APP_LANG="ja" # Switch to Japanese
 ### Customizing Prompts
 
 You can fully customize the system prompts sent to Gemini to suit your workflow.
-Edit the files located in `src/config/locales/`:
+Edit the files located in `src/config/prompts/`:
 
--   **English**: `src/config/locales/en.ts`
--   **Japanese**: `src/config/locales/ja.ts`
+-   **English**: `src/config/prompts/en.ts`
+-   **Japanese**: `src/config/prompts/ja.ts`
 
-For example, to change the behavior of the **General Mode**, modify the `prompts.general` field:
+For example, to change the behavior of the **General Mode**, modify the `general` field:
 
 ```typescript
-// src/config/locales/en.ts
-export const TEXT = {
-    prompts: {
-        // Change this to whatever you like!
-        general: "Please summarize the following content in a poetic style.", 
-        // ...
-    },
+// src/config/prompts/en.ts
+export const PROMPTS = {
+    // Change this to whatever you like!
+    general: "Please summarize the following content in a poetic style.", 
     // ...
 };
 ```
 
-This allows you to fine-tune the AI's personality and output format for each mode.
+This allows you to fine-tune the AI's personality and output format for each mode without affecting system messages.
 
 ## Usage
 

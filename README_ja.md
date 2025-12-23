@@ -81,26 +81,23 @@ APP_LANG="ja" # 日本語に設定 (デフォルトは英語の場合があり�
 ### プロンプトのカスタマイズ
 
 Geminiに送信されるシステムプロンプトを、自分のワークフローに合わせて自由にカスタマイズできます。
-`src/config/locales/` 内にある以下のファイルを編集してください。
+`src/config/prompts/` 内にある以下のファイルを編集してください。
 
--   **日本語**: `src/config/locales/ja.ts`
--   **英語**: `src/config/locales/en.ts`
+-   **日本語**: `src/config/prompts/ja.ts`
+-   **英語**: `src/config/prompts/en.ts`
 
-例えば、**Generalモード** の挙動を変えたい場合は、`prompts.general` フィールドを編集します。
+例えば、**Generalモード** の挙動を変えたい場合は、`general` フィールドを編集します。
 
 ```typescript
-// src/config/locales/ja.ts
-export const TEXT = {
-    prompts: {
-        // ここを好きな指示に変更できます！
-        general: "以下の内容を慣習に従って厳格に、かつ、優しく人が傷つかないように丁寧に説明して。", 
-        // ...
-    },
+// src/config/prompts/ja.ts
+export const PROMPTS = {
+    // ここを好きな指示に変更できます！
+    general: "以下の内容を慣習に従って厳格に、かつ、優しく人が傷つかないように丁寧に説明して。",
     // ...
 };
 ```
 
-これにより、各モードにおけるAIの「人格」や出力フォーマットを細かく調整することが可能です。
+これにより、システムメッセージ（ログなど）に影響を与えることなく、各モードにおけるAIの「人格」や出力フォーマットを安全に調整することが可能です。
 
 ## 使い方
 

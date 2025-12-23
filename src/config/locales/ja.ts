@@ -1,25 +1,11 @@
-// @ts-ignore
-export const TEXT = {
-    prompts: {
-        general:
-            "以下の内容を要約し、重要ポイントを箇条書きで抽出してください。",
+// ⚠️ このファイルはシステムメッセージ定義用です。
+// AIへのプロンプトを変更したい場合は、src/config/prompts/ja.ts を編集してください。
 
-        xPost:
-            "この記事を元に、技術系ユーザーに刺さるX投稿案（140文字以内）を3つ、最適なハッシュタグと共に提案してください。\n" +
-            "**出力形式:**\n" +
-            "以下のJSON形式のみで出力してください。Markdownのコードブロック（```json）や説明文は含めないでください。\n" +
-            `[{"content": "投稿本文", "hashtags": ["#tag1", "#tag2"]}]`,
-
-        debug:
-            "このログの根本原因を特定し、解決のための具体的なコマンドや手順を提示してください。",
-
-        additionalInstruction: "追加の指示",
-        targetData: "対象データ"
-    },
+export const MESSAGES = {
     logs: {
         obsidianSaved: "📄 Obsidianに記録しました",
         geminiAnalyzing: "🤖 Geminiが解析中",
-        modeSuffix: "モード", // 追加
+        modeSuffix: "モード",
         analysisResult: "✨ 解析結果",
         obsidianAppended: "✅ 解析結果をファイルに追記しました",
         readingFromObsidian: "📂 Obsidianからノートを読み込んでいます",

@@ -1,18 +1,11 @@
-export const TEXT = {
-    prompts: {
-        general: "Please summarize the following content and extract key points in bullet points.",
-        xPost: "Based on this article, propose 3 X (Twitter) post drafts (within 140 characters) that would appeal to technical users, along with optimal hashtags.\n" +
-               "**Output Format:**\n" +
-               "Output ONLY in the following JSON format. Do not include Markdown code blocks (```json) or explanations.\n" +
-               `[{"content": "Post content", "hashtags": ["#tag1", "#tag2"]}]`,
-        debug: "Identify the root cause of this log and provide specific commands or steps for resolution.",
-        additionalInstruction: "Additional Instructions",
-        targetData: "Target Data"
-    },
+// ⚠️ This file is for system messages.
+// To customize AI prompts, please edit src/config/prompts/en.ts
+
+export const MESSAGES = {
     logs: {
         obsidianSaved: "📄 Saved to Obsidian",
         geminiAnalyzing: "🤖 Gemini is analyzing",
-        modeSuffix: "mode", // 追加
+        modeSuffix: "mode",
         analysisResult: "✨ Analysis Result",
         obsidianAppended: "✅ Analysis result appended to file",
         readingFromObsidian: "📂 Reading note from Obsidian",
