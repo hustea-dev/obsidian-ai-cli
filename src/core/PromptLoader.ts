@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import matter from 'gray-matter';
+import { z } from 'zod';
 import { PromptFileSchema } from '../types/schemas.ts';
 import { DEFAULT_PROMPTS } from '../templates/defaultPrompt.ts';
 import { TEXT } from '../config/text.ts';
@@ -41,6 +42,17 @@ export class PromptLoader {
                     return content.trim();
                 }
                 throw new Error(`No default prompt found for: ${promptName}`);
+            }
+            
+            if (error instanceof z.ZodError) {
+                const contentError = error.issues.find(issue =>
+                    issue.path.includes('content') && issue.code === 'too_small'
+                );
+
+                if (contentError) {
+                    const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', filePath);
+                    throw new Error(`${errorMessage}\n${TEXT.loader.reason}: ${TEXT.validation.promptTooShort}`);
+                }
             }
             
             const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', filePath);

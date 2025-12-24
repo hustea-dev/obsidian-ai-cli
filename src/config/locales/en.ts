@@ -56,5 +56,8 @@ export const MESSAGES = {
     labels: {
         additionalInstruction: "Additional Instructions",
         targetData: "Target Data"
+    },
+    validation: {
+        promptTooShort: "Prompt is too short (at least 10 characters required)"
     }
 };

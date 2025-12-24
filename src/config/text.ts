@@ -15,4 +15,4 @@ const EN = {
     prompts: EN_PROMPTS
 };
 
-export const TEXT = lang === 'en' ? EN : JA;
+export const TEXT = (lang === 'en' ? EN : JA) as typeof EN;

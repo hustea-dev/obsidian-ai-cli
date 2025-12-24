@@ -7,7 +7,7 @@ export const PromptFileSchema = z.object({
         tags: z.array(z.string()).optional(),
     }).optional(),
     
-    content: z.string().min(10, "プロンプトが短すぎます (10文字以上必要です)"),
+    content: z.string().min(10, "Prompt is too short (at least 10 characters required)"),
 });
 
 export type PromptFile = z.infer<typeof PromptFileSchema>;
