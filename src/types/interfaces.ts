@@ -18,7 +18,7 @@ export interface ModeStrategy {
         inputData: string,
         obsidian: ObsidianService,
         genAI: GoogleGenAI,
-        promptLoader: PromptLoader, // 追加
+        promptLoader: PromptLoader,
         fileInfo: { relativePath: string; fullPath: string },
         instruction?: string
     ): Promise<any>;
@@ -27,4 +27,10 @@ export interface ModeStrategy {
 export interface XPostCandidate {
     content: string;
     hashtags: string[];
+}
+
+export interface NoteData {
+    date: Date;
+    mode: AppMode;
+    inputData: string;
 }

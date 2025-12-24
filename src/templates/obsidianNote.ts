@@ -1,11 +1,5 @@
-import { AppMode } from '../types/constants.ts';
 import { TEXT } from '../config/text.ts';
-
-export interface NoteData {
-    date: Date;
-    mode: AppMode;
-    inputData: string;
-}
+import type {NoteData} from '../types/interfaces.ts';
 
 export const createNoteContent = (data: NoteData): string => {
     return `---
