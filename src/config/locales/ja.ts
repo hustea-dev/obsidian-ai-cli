@@ -41,5 +41,20 @@ export const MESSAGES = {
     ui: {
         selectPost: "投稿する案を選択してください:",
         confirmPost: "この内容でXに投稿しますか？"
+    },
+    loader: {
+        loadError: "カスタムプロンプトの読み込みに失敗しました。",
+        reason: "理由",
+        confirmContinue: "内蔵のデフォルトプロンプトを使用して処理を続行しますか？",
+        usingDefault: "デフォルトプロンプトを使用します。",
+        aborting: "処理を中止しました。",
+        loadErrorDetail: "プロンプトファイルの読み込みに失敗しました: {filePath}",
+        createdDefaultFile: "デフォルトのプロンプトファイルを作成しました: {filePath}",
+        createDefaultError: "デフォルトのプロンプトファイルの作成に失敗しました: {filePath}",
+        defaultPromptDescription: "{promptName} 用に自動生成されたプロンプト"
+    },
+    labels: {
+        additionalInstruction: "追加の指示",
+        targetData: "対象データ"
     }
 };
