@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { PromptLoader } from './src/core/PromptLoader.ts';
+import { ObsidianService } from './src/services/ObsidianService.ts';
 import { TEXT } from './src/config/text.ts';
 
 // テスト用のダミーVaultパス
@@ -19,7 +20,10 @@ async function runCheck() {
         await fs.mkdir(TEST_VAULT_PATH, { recursive: true });
     } catch (e) {}
 
-    const loader = new PromptLoader(TEST_VAULT_PATH, LANG);
+    // ObsidianServiceを初期化
+    const obsidian = new ObsidianService(TEST_VAULT_PATH);
+    // PromptLoaderに渡す
+    const loader = new PromptLoader(obsidian, LANG);
 
     // 1. ファイルがない状態での読み込み (自動作成の確認)
     console.log("--- Test 1: ファイルがない状態 ---");
@@ -43,10 +47,12 @@ async function runCheck() {
     try {
         const prompt = await loader.load(PROMPT_NAME);
         console.log("✅ 読み込み成功");
-        if (prompt.includes("Fedora Linux")) { // デフォルトプロンプトに含まれる文言
+        // 期待値を現在のプロンプトに合わせて修正
+        if (prompt.includes("要約")) { 
              console.log("✅ 内容も正しいです");
         } else {
              console.error("❌ 内容が期待と異なります");
+             console.error(`   実際の値: ${prompt}`);
         }
     } catch (e) {
         console.error("❌ エラー発生:", e);

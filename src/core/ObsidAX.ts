@@ -28,7 +28,7 @@ export class ObsidAX {
         this.obsidian = new ObsidianService(config.vaultPath);
         
         const lang = process.env.APP_LANG || 'ja';
-        this.promptLoader = new PromptLoader(config.vaultPath, lang);
+        this.promptLoader = new PromptLoader(this.obsidian, lang);
     }
 
     async run() {
@@ -65,7 +65,7 @@ export class ObsidAX {
             inputData,
             this.obsidian,
             this.genAI,
-            this.promptLoader, // 追加
+            this.promptLoader,
             { relativePath, fullPath },
             this.config.instruction
         );

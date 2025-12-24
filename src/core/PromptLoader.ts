@@ -1,17 +1,17 @@
-import * as fs from 'fs/promises';
 import * as path from 'path';
 import matter from 'gray-matter';
 import { z } from 'zod';
 import { PromptFileSchema } from '../types/schemas.ts';
 import { DEFAULT_PROMPTS } from '../templates/defaultPrompt.ts';
 import { TEXT } from '../config/text.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
 
 export class PromptLoader {
-    private vaultPath: string;
+    private obsidian: ObsidianService;
     private lang: string;
 
-    constructor(vaultPath: string, lang: string) {
-        this.vaultPath = vaultPath;
+    constructor(obsidian: ObsidianService, lang: string) {
+        this.obsidian = obsidian;
         this.lang = lang;
     }
 
@@ -21,10 +21,10 @@ export class PromptLoader {
      * @returns プロンプト本文
      */
     async load(promptName: string): Promise<string> {
-        const filePath = path.join(this.vaultPath, '_AI_Prompts', 'prompts', this.lang, `${promptName}.md`);
+        const relativePath = path.join('_AI_Prompts', 'prompts', this.lang, `${promptName}.md`);
 
         try {
-            const fileContent = await fs.readFile(filePath, 'utf-8');
+            const fileContent = await this.obsidian.readNote(relativePath);
             const { content, data } = matter(fileContent);
 
             const validated = PromptFileSchema.parse({
@@ -37,7 +37,11 @@ export class PromptLoader {
             if (error.code === 'ENOENT') {
                 const defaultContent = DEFAULT_PROMPTS[promptName];
                 if (defaultContent) {
-                    await this.createDefault(filePath, defaultContent);
+                    await this.obsidian.createNote(relativePath, defaultContent);
+                    
+                    const logMessage = TEXT.loader.createdDefaultFile.replace('{filePath}', relativePath);
+                    console.log(`ℹ️  ${logMessage}`);
+
                     const { content } = matter(defaultContent);
                     return content.trim();
                 }
@@ -50,31 +54,13 @@ export class PromptLoader {
                 );
 
                 if (contentError) {
-                    const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', filePath);
+                    const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', relativePath);
                     throw new Error(`${errorMessage}\n${TEXT.loader.reason}: ${TEXT.validation.promptTooShort}`);
                 }
             }
             
-            const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', filePath);
+            const errorMessage = TEXT.loader.loadErrorDetail.replace('{filePath}', relativePath);
             throw new Error(`${errorMessage}\n${TEXT.loader.reason}: ${error.message}`);
-        }
-    }
-
-    /**
-     * デフォルトのプロンプトファイルを作成する
-     */
-    private async createDefault(filePath: string, fileContent: string): Promise<void> {
-        try {
-            const dirPath = path.dirname(filePath);
-            await fs.mkdir(dirPath, { recursive: true });
-            
-            await fs.writeFile(filePath, fileContent, 'utf-8');
-            
-            const logMessage = TEXT.loader.createdDefaultFile.replace('{filePath}', filePath);
-            console.log(`ℹ️  ${logMessage}`);
-        } catch (e) {
-            const errorMessage = TEXT.loader.createDefaultError.replace('{filePath}', filePath);
-            console.error(`❌ ${errorMessage}`, e);
         }
     }
 }
