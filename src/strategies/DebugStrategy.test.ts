@@ -1,14 +1,14 @@
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import { DebugStrategy } from './DebugStrategy.ts';
-import { ObsidianService } from '../core/ObsidianService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
+import { PromptLoader } from '../core/PromptLoader.ts';
 import { AppMode } from '../types/constants.ts';
 
 // モックの定義
 class MockObsidianService extends ObsidianService {
     constructor() { super('/tmp'); }
     
-    // 呼び出し確認用のフラグとデータ
     appendCalled = false;
     lastAppendPath = "";
     lastAppendContent = "";
@@ -38,21 +38,28 @@ describe('DebugStrategy', () => {
     // コンソールログの抑制
     const originalLog = console.log;
     const originalError = console.error;
+    const originalWarn = console.warn;
 
     before(() => {
         console.log = () => {};
         console.error = () => {};
+        console.warn = () => {};
     });
 
     after(() => {
         console.log = originalLog;
         console.error = originalError;
+        console.warn = originalWarn;
     });
 
     it('should execute analysis AND append to Obsidian', async () => {
         const strategy = new DebugStrategy();
         const mockObsidian = new MockObsidianService();
         const mockGenAI = new MockGenAI() as any;
+        
+        const mockLoader = {
+            load: async (name: string, defaultPrompt: string) => defaultPrompt
+        } as unknown as PromptLoader;
 
         const inputData = "Error log content";
         const fileInfo = { relativePath: "debug_log.md", fullPath: "/tmp/debug_log.md" };
@@ -61,20 +68,14 @@ describe('DebugStrategy', () => {
             inputData,
             mockObsidian,
             mockGenAI,
+            mockLoader,
             fileInfo
         );
 
-        // 1. Geminiからの応答が正しいか
         assert.strictEqual(result.responseText, "Debug Analysis Result");
-
-        // 2. Obsidianへの追記メソッドが呼ばれたか
         assert.strictEqual(mockObsidian.appendCalled, true, "Should call appendAnalysisResult");
-        
-        // 3. 正しいパスとモードで呼ばれたか
         assert.strictEqual(mockObsidian.lastAppendPath, fileInfo.relativePath);
         assert.strictEqual(mockObsidian.lastAppendMode, AppMode.DEBUG);
-        
-        // 4. 内容が渡されているか
         assert.strictEqual(mockObsidian.lastAppendContent, "Debug Analysis Result");
     });
 });

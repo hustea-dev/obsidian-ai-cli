@@ -13,7 +13,7 @@ Obsidian, Google Gemini, and X (formerly Twitter) integrated CLI tool to superch
     -   **Debug (`debug`)**: Analyze error logs and save the session to Obsidian.
     -   **X-Post (`xpost`)**: Generate tweet drafts from your notes and save the session to Obsidian.
 -   **Flexible Input**: Works with both file paths and standard input (pipes).
--   **Customizable Prompts**: Easily modify AI instructions and switch languages.
+-   **Customizable Prompts**: Easily modify AI instructions directly within Obsidian.
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ Obsidian, Google Gemini, and X (formerly Twitter) integrated CLI tool to superch
 1.  **Clone the repository:**
 
     ```sh
-    git clone https://github.com/Yoshinori-Imada/obsidian-ai-cli.git
+    git clone https://github.com/your-username/obsidian-ai-cli.git
     cd obsidian-ai-cli
     ```
 
@@ -80,26 +80,29 @@ APP_LANG="ja" # Switch to Japanese
 # APP_LANG="en" # Switch to English (Default)
 ```
 
-### Customizing Prompts
+### Customizing Prompts (New in v1.1.0!)
 
-You can fully customize the system prompts sent to Gemini to suit your workflow.
-Edit the files located in `src/config/prompts/`:
+You can fully customize the system prompts sent to Gemini directly from your Obsidian Vault.
 
--   **English**: `src/config/prompts/en.ts`
--   **Japanese**: `src/config/prompts/ja.ts`
+1.  Run any command (e.g., `ai "hello"`).
+2.  The tool will automatically create a folder named **`_AI_Prompts`** in your Obsidian Vault.
+3.  Inside `_AI_Prompts/prompts/{lang}/`, you will find Markdown files for each mode (e.g., `general.md`, `xpost.md`).
+4.  **Edit these Markdown files directly in Obsidian** to change the AI's behavior.
 
-For example, to change the behavior of the **General Mode**, modify the `general` field:
+The files use Frontmatter for metadata, but you only need to edit the content below the `---` separator.
 
-```typescript
-// src/config/prompts/en.ts
-export const PROMPTS = {
-    // Change this to whatever you like!
-    general: "Please summarize the following content in a poetic style.", 
-    // ...
-};
+```markdown
+---
+description: "Auto-generated prompt for general"
+version: 1.0
+tags: ["system-prompt"]
+---
+
+# Your Custom Prompt Here
+Please summarize the following content in a poetic style...
 ```
 
-This allows you to fine-tune the AI's personality and output format for each mode without affecting system messages.
+If you delete these files or they become corrupted, the tool will offer to regenerate them with default values.
 
 ## Usage
 

@@ -1,4 +1,4 @@
-import { ObsidianService } from '../core/ObsidianService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
 import { TEXT } from '../config/text.ts';
 import { AppMode } from '../types/constants.ts';
 import { BaseStrategy } from './BaseStrategy.ts';

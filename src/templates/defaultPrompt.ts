@@ -1,0 +1,30 @@
+import { TEXT } from '../config/text.ts';
+
+export const DEFAULT_PROMPTS: Record<string, string> = {
+    general: `---
+description: "${TEXT.loader.defaultPromptDescription.replace('{promptName}', 'general')}"
+version: 1.0
+tags: ["system-prompt"]
+---
+
+${TEXT.prompts.general}
+`,
+
+    xpost: `---
+description: "${TEXT.loader.defaultPromptDescription.replace('{promptName}', 'xpost')}"
+version: 1.0
+tags: ["system-prompt"]
+---
+
+${TEXT.prompts.xpost}
+`,
+
+    debug: `---
+description: "${TEXT.loader.defaultPromptDescription.replace('{promptName}', 'debug')}"
+version: 1.0
+tags: ["system-prompt"]
+---
+
+${TEXT.prompts.debug}
+`
+};

@@ -41,5 +41,20 @@ export const MESSAGES = {
     ui: {
         selectPost: "Select a post candidate:",
         confirmPost: "Post this content to X?"
+    },
+    loader: {
+        loadError: "Failed to load custom prompt.",
+        reason: "Reason",
+        confirmContinue: "Do you want to continue using the built-in default prompt?",
+        usingDefault: "Using default prompt.",
+        aborting: "Process aborted.",
+        loadErrorDetail: "Failed to load prompt file: {filePath}",
+        createdDefaultFile: "Created default prompt file: {filePath}",
+        createDefaultError: "Failed to create default prompt file: {filePath}",
+        defaultPromptDescription: "Auto-generated prompt for {promptName}"
+    },
+    labels: {
+        additionalInstruction: "Additional Instructions",
+        targetData: "Target Data"
     }
 };

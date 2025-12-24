@@ -2,17 +2,18 @@
   "type": "module",
   "dependencies": {
     "@google/genai": "^1.4.0",
+    "@inquirer/prompts": "^5.0.0",
     "dotenv": "^16.5.0",
+    "gray-matter": "^4.0.3",
     "marked": "^15.0.12",
     "marked-terminal": "^7.3.0",
-    "zod": "^4.1.13",
     "twitter-api-v2": "^1.15.0",
-    "@inquirer/prompts": "^5.0.0"
+    "zod": "^4.1.13"
   },
-  "name": "gemini",
-  "version": "1.0.0",
+  "name": "obsidian-ai-cli",
+  "version": "1.1.0",
   "description": "",
-  "main": "gemini copy 2.js",
+  "main": "src/index.ts",
   "devDependencies": {
     "@types/node": "^24.10.1",
     "ts-node": "^10.9.2",

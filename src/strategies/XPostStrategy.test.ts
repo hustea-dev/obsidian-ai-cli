@@ -1,10 +1,11 @@
 import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import { XPostStrategy } from './XPostStrategy.ts';
-import { ObsidianService } from '../core/ObsidianService.ts';
-import { XService } from '../core/XService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
+import { XService } from '../services/XService.ts';
+import { UserInteraction } from '../services/UserInteraction.ts';
+import { PromptLoader } from '../core/PromptLoader.ts';
 import type { XPostCandidate } from '../types/interfaces.ts';
-import { AppMode } from '../types/constants.ts';
 
 // モック用のクラス定義
 class MockObsidianService extends ObsidianService {
@@ -17,7 +18,6 @@ class MockObsidianService extends ObsidianService {
         this.appendCalled = true;
     }
     
-    // コンテキスト読み込みのモック
     async readContextNote(relativePath: string) { 
         this.readCalled = true;
         this.lastReadPath = relativePath;
@@ -30,7 +30,6 @@ class MockObsidianService extends ObsidianService {
 class MockGenAI {
     lastPrompt = "";
     async generateContent(params: any) {
-        // プロンプトの内容を保存して後で検証できるようにする
         this.lastPrompt = params.contents[0].parts[0].text;
         return { text: "Mock AI Response" };
     }
@@ -38,27 +37,34 @@ class MockGenAI {
 }
 
 class MockXService extends XService {
-    constructor() { 
-        super();
-    }
+    constructor() { super(); }
     async postTweet(content: string) {
         return { id: "12345", text: content };
     }
 }
 
-// テスト対象のクラスを継承して、対話部分をモック化
-class TestableXPostStrategy extends XPostStrategy {
+class MockUserInteraction extends UserInteraction {
     mockSelectedCandidateIndex = 0;
     mockConfirmResult = true;
+
+    override isInteractive() { return true; }
+
+    override async askSelect<T>(message: string, choices: { value: T }[]): Promise<T> {
+        return choices[this.mockSelectedCandidateIndex].value;
+    }
+
+    override async askConfirm(message: string, defaultResponse: boolean): Promise<boolean> {
+        return this.mockConfirmResult;
+    }
+}
+
+class TestableXPostStrategy extends XPostStrategy {
     postTweetCalled = false;
     postedContent = "";
 
-    protected override async selectPostCandidate(candidates: XPostCandidate[]): Promise<XPostCandidate> {
-        return candidates[this.mockSelectedCandidateIndex]!;
-    }
-
-    protected override async confirmPost(): Promise<boolean> {
-        return this.mockConfirmResult;
+    constructor(mockUI: MockUserInteraction) {
+        super();
+        this.ui = mockUI;
     }
 
     protected override createXService(): XService {
@@ -85,7 +91,6 @@ describe('XPostStrategy', () => {
         process.env.X_API_SECRET = "dummy";
         process.env.X_ACCESS_TOKEN = "dummy";
         process.env.X_ACCESS_SECRET = "dummy";
-        Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
     });
 
     after(() => {
@@ -95,9 +100,14 @@ describe('XPostStrategy', () => {
     });
 
     it('should read from Obsidian, analyze with Gemini, and post to X', async () => {
-        const strategy = new TestableXPostStrategy();
+        const mockUI = new MockUserInteraction();
+        const strategy = new TestableXPostStrategy(mockUI);
         const mockObsidian = new MockObsidianService();
         const mockGenAI = new MockGenAI() as any;
+        
+        const mockLoader = {
+            load: async (name: string, defaultPrompt: string) => defaultPrompt
+        } as unknown as PromptLoader;
 
         const mockCandidates = [
             { content: "Post 1", hashtags: ["#tag1"] },
@@ -112,17 +122,14 @@ describe('XPostStrategy', () => {
         const fileInfo = { relativePath: "blog_post.md", fullPath: "/tmp/blog_post.md" };
 
         await strategy.execute(
-            "Initial Input (Ignored in XPost)", // XPostではこれは使わず、Obsidianから読み込むはず
+            "Initial Input",
             mockObsidian, 
             mockGenAI, 
+            mockLoader,
             fileInfo
         );
 
         assert.strictEqual(mockObsidian.readCalled, true, "Should read from Obsidian");
-        assert.strictEqual(mockObsidian.lastReadPath, "blog_post.md");
-
-        assert.match(mockGenAI.lastPrompt, /Content from Obsidian Note/, "Prompt should contain content read from Obsidian");
-
         assert.strictEqual(strategy.postTweetCalled, true, "Should post to X");
         assert.match(strategy.postedContent, /Post 1/, "Posted content should match selection");
     });

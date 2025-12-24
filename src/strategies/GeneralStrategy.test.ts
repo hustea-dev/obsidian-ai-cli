@@ -1,7 +1,8 @@
 import { test, describe, it, mock } from 'node:test';
 import assert from 'node:assert';
 import { GeneralStrategy } from './GeneralStrategy.ts';
-import { ObsidianService } from '../core/ObsidianService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
+import { PromptLoader } from '../core/PromptLoader.ts';
 import { AppMode } from '../types/constants.ts';
 
 class MockObsidianService extends ObsidianService {
@@ -31,6 +32,11 @@ describe('GeneralStrategy', () => {
         const strategy = new GeneralStrategy();
         const mockObsidian = new MockObsidianService();
         const mockGenAI = new MockGenAI() as any;
+        
+        // クラス継承ではなく、単純なオブジェクトとしてモックを作成
+        const mockLoader = {
+            load: async (name: string, defaultPrompt: string) => defaultPrompt
+        } as unknown as PromptLoader;
 
         const originalLog = console.log;
         console.log = () => {};
@@ -40,6 +46,7 @@ describe('GeneralStrategy', () => {
                 "test input",
                 mockObsidian,
                 mockGenAI,
+                mockLoader,
                 { relativePath: "test.md", fullPath: "/tmp/test.md" }
             );
 

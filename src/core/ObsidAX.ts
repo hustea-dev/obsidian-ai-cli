@@ -2,7 +2,8 @@ import * as path from 'path';
 import { GoogleGenAI } from "@google/genai";
 import { AppMode } from '../types/constants.ts';
 import type { ModeStrategy, ObsidAXConfig } from '../types/interfaces.ts';
-import { ObsidianService } from './ObsidianService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
+import { PromptLoader } from './PromptLoader.ts';
 import { createNoteContent } from "../templates/obsidianNote.ts";
 import { DebugStrategy } from "../strategies/DebugStrategy.ts";
 import { GeneralStrategy } from "../strategies/GeneralStrategy.ts";
@@ -19,11 +20,15 @@ export class ObsidAX {
     private genAI: GoogleGenAI;
     private config: ObsidAXConfig;
     private obsidian: ObsidianService;
+    private promptLoader: PromptLoader;
 
     constructor(config: ObsidAXConfig) {
         this.config = config;
         this.genAI = new GoogleGenAI({ apiKey: config.apiKey });
         this.obsidian = new ObsidianService(config.vaultPath);
+        
+        const lang = process.env.APP_LANG || 'ja';
+        this.promptLoader = new PromptLoader(config.vaultPath, lang);
     }
 
     async run() {
@@ -60,6 +65,7 @@ export class ObsidAX {
             inputData,
             this.obsidian,
             this.genAI,
+            this.promptLoader, // 追加
             { relativePath, fullPath },
             this.config.instruction
         );

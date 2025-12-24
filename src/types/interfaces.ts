@@ -1,6 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 import { AppMode } from './constants.ts';
-import { ObsidianService } from '../core/ObsidianService.ts';
+import { ObsidianService } from '../services/ObsidianService.ts';
+import { PromptLoader } from '../core/PromptLoader.ts';
 
 export interface ObsidAXConfig {
     apiKey: string;
@@ -17,6 +18,7 @@ export interface ModeStrategy {
         inputData: string,
         obsidian: ObsidianService,
         genAI: GoogleGenAI,
+        promptLoader: PromptLoader, // 追加
         fileInfo: { relativePath: string; fullPath: string },
         instruction?: string
     ): Promise<any>;
