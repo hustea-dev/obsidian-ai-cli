@@ -66,13 +66,12 @@ function validateMode(modeInput: string | undefined): AppMode {
     let instruction = instructionArg ? instructionArg.split('=')[1] : undefined;
 
     let inputData = "";
-
     if (filePath) {
         try {
             await fs.access(filePath);
             inputData = await fs.readFile(filePath, 'utf-8');
         } catch (e) {
-            const textInput = filePath; // 元の文字列を保存
+            const textInput = filePath;
             filePath = undefined;
 
             const stdinData = await readStdin().catch(() => "");
