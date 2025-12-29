@@ -5,6 +5,7 @@
 **Forge new ideas from your Obsidian Vault with AI.**
 
 Vault-Forge is a CLI tool that seamlessly integrates your terminal workflow with Obsidian and AI (Google Gemini). It captures fleeting notes, logs, and ideas, processes them with AI, and stores them in your vault, which you can then use as a space to forge and refine your creative ideas.
+
 ## Features
 
 -   **Seamless Integration**: Pipe any text from your terminal directly into your Obsidian vault, tagged and organized.
@@ -65,35 +66,59 @@ Vault-Forge is a CLI tool that seamlessly integrates your terminal workflow with
 vf --mode=<mode> [file] [instruction]
 ```
 
-### Examples
+## Modes in Detail
 
-#### **General Mode (`ai`)**
+### 1. General Mode (`ai`)
+The most versatile mode. It sends the input text to AI and displays the response.
+Useful for summarization, translation, proofreading, or simple Q&A.
+
+**Examples:**
 ```sh
-ai "How are you today?"
-cat my-notes.md | ai "Summarize this"
+# Ask a question directly
+ai "What is the capital of France?"
+
+# Summarize a text file
+cat long_document.txt | ai "Summarize this in 3 bullet points"
 ```
 
-#### **X-Post Mode (`xpost`)**
-```sh
-xpost ./posts/my-article.md
-```
-<p align="center">
-  <img src="assets/xpost_demo.gif" alt="xpost demo" width="600">
-</p>
+### 2. Debug Mode (`debug`)
+Designed for developers. It analyzes error logs, explains the root cause, and suggests solutions.
+The analysis result is automatically saved to your Obsidian Vault (`Inbox/YYYY-MM-DD/log_HHMMSS.md`).
 
-#### **Debug Mode (`debug`)**
+**Examples:**
 ```sh
+# Analyze a log file
 debug error.log
+
+# Pipe logs from another command
 kubectl logs my-pod | debug
 ```
-<p align="center">
-  <img src="assets/debug_demo.gif" alt="debug demo" width="600">
-</p>
+
+### 3. X-Post Mode (`xpost`)
+Turns your Obsidian notes into engaging social media posts (for X/Twitter).
+It generates multiple draft options with hashtags. You can interactively select, regenerate, or edit the post before publishing.
+
+**Features:**
+-   **Interactive Selection**: Choose from 3 AI-generated drafts.
+-   **Regenerate**: Not satisfied? Ask AI to try again.
+-   **Save & Exit**: Save the drafts to Obsidian without posting.
+
+**Examples:**
+```sh
+xpost ./posts/my-new-article.md
+```
 
 ## Customizing Prompts
 
 You can fully customize the system prompts directly from your Obsidian Vault.
-Edit the Markdown files in `_AI_Prompts/prompts/{lang}/`.
+
+### How it works
+1.  **Auto-Generation**: When you run a mode for the first time, Vault-Forge automatically creates a prompt file in your Obsidian Vault.
+2.  **Location**: Files are stored in `_AI_Prompts/prompts/{lang}/`.
+    -   `general.md`: For General mode
+    -   `debug.md`: For Debug mode
+    -   `xpost.md`: For X-Post mode
+3.  **Editing**: Simply edit these Markdown files in Obsidian. The changes are applied immediately to your next CLI execution.
 
 <p align="center">
   <img src="assets/customprompt.png" alt="custom prompt" width="600">

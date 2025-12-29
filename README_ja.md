@@ -65,35 +65,59 @@ Vault-Forgeは、ターミナルワークフローとObsidian、そしてAI (Goo
 vf --mode=<mode> [file] [instruction]
 ```
 
-### 使用例
+## 各モードの詳細
 
-#### **通常モード (`ai`)**
+### 1. 通常モード (`ai`)
+最も汎用的なモードです。入力されたテキストをAIに送信し、応答を表示します。
+要約、翻訳、校正、ちょっとした質問などに便利です。
+
+**使用例:**
 ```sh
-ai "今日の調子はどう？"
-cat my-notes.md | ai "要約して"
+# 直接質問する
+ai "フランスの首都は？"
+
+# テキストファイルを要約する
+cat long_document.txt | ai "3行で要約して"
 ```
 
-#### **X投稿モード (`xpost`)**
-```sh
-xpost ./posts/my-article.md
-```
-<p align="center">
-  <img src="assets/xpost_demo.gif" alt="xpost demo" width="600">
-</p>
+### 2. デバッグモード (`debug`)
+開発者向けに設計されています。エラーログを解析し、根本原因と解決策を提示します。
+解析結果は自動的にObsidian Vault (`Inbox/YYYY-MM-DD/log_HHMMSS.md`) に保存されます。
 
-#### **デバッグモード (`debug`)**
+**使用例:**
 ```sh
+# ログファイルを解析
 debug error.log
+
+# 他のコマンドの出力をパイプで渡す
 kubectl logs my-pod | debug
 ```
-<p align="center">
-  <img src="assets/debug_demo.gif" alt="debug demo" width="600">
-</p>
+
+### 3. X投稿モード (`xpost`)
+Obsidianのノートを元に、SNS (X/Twitter) 向けの投稿案を作成します。
+ハッシュタグ付きの複数のドラフトが生成され、対話的に選択・再生成・投稿が可能です。
+
+**主な機能:**
+-   **対話的選択**: AIが生成した3つの案から選択できます。
+-   **再生成**: 気に入らない場合は、何度でも作り直せます。
+-   **保存して終了**: 投稿せずに、ドラフトをObsidianに保存して終了することも可能です。
+
+**使用例:**
+```sh
+xpost ./posts/my-new-article.md
+```
 
 ## プロンプトのカスタマイズ
 
 Geminiに送信されるシステムプロンプトを、Obsidian Vault内のMarkdownファイルとして直接編集できます。
-`_AI_Prompts/prompts/{lang}/` 内のファイルを編集してください。
+
+### 仕組み
+1.  **自動生成**: 各モードを初めて実行した際に、Obsidian Vault内にプロンプトファイルが自動生成されます。
+2.  **保存場所**: `_AI_Prompts/prompts/{lang}/` ディレクトリに保存されます。
+    -   `general.md`: 通常モード用
+    -   `debug.md`: デバッグモード用
+    -   `xpost.md`: X投稿モード用
+3.  **編集**: ObsidianでこれらのMarkdownファイルを編集するだけで、次回の実行から即座に反映されます。
 
 <p align="center">
   <img src="assets/customprompt.png" alt="custom prompt" width="600">
