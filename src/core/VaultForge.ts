@@ -9,6 +9,7 @@ import { GeneralStrategy } from "../strategies/GeneralStrategy.ts";
 import { XPostStrategy } from "../strategies/XPostStrategy.ts";
 import { TEXT } from '../config/text.ts';
 import { AIServiceFactory } from '../services/ai/AIServiceFactory.ts';
+import { AIProvider } from '../types/constants.ts';
 
 const MODE_CONFIG = {
     [AppMode.X_POST]: { Strategy: XPostStrategy, saveInput: true },
@@ -24,7 +25,7 @@ export class VaultForge {
 
     constructor(config: VaultForgeConfig) {
         this.config = config;
-        this.aiService = AIServiceFactory.create(config.aiProvider, config.apiKey);
+        this.aiService = AIServiceFactory.create(config.aiProvider || AIProvider.GEMINI, config.apiKey);
         this.obsidian = new ObsidianService(config.vaultPath);
         
         const lang = process.env.APP_LANG || 'ja';
