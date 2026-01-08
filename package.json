@@ -1,12 +1,16 @@
 {
   "name": "vault-forge",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Forge new ideas from your Obsidian Vault with AI.",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "bin": {
     "vf": "dist/index.js"
   },
+  "files": [
+    "dist",
+    "README_ja.md"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
